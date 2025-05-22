@@ -1,9 +1,9 @@
-FROM python:3.10
+FROM python:3.10-slim
 
+RUN pip install fastapi uvicorn playwright
+RUN playwright install
+
+COPY . /app
 WORKDIR /app
-COPY . .
 
-RUN pip install --upgrade pip && pip install -r requirements.txt
-RUN playwright install --with-deps
-
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"]
