@@ -1,6 +1,6 @@
 from playwright.sync_api import sync_playwright
 
-def choisir_club():
+def choisir_club(nom_cible="Paris Rue Froment"):
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
@@ -13,16 +13,16 @@ def choisir_club():
         boutons = page.query_selector_all('.js-select-club-new-checkout')
         for bouton in boutons:
             nom_club = bouton.get_attribute("data-name")
-            if nom_club and "Paris Rue Froment" in nom_club:
+            if nom_club and nom_cible in nom_club:
                 print(f"✅ Club trouvé : {nom_club}")
                 bouton.click()
-                break
+                browser.close()
+                return True
         else:
             print("❌ Club non trouvé.")
+            browser.close()
+            return False
 
-        page.wait_for_timeout(3000)
-        browser.close()
-
-# Pour test local (peut être retiré si intégré dans une API)
+# Pour test manuel
 if __name__ == "__main__":
     choisir_club()
